@@ -14,23 +14,35 @@ app.get("/", (req, res) => {
 });
 
 // The endpoint to receive IoT data
-app.post("/api/iot-data", (req, res) => {
-  const data = req.body;
-  console.log("Received data:", data);
+app.post("/api/iot-data", async (req, res) => {
+  const dataArray = req.body;
 
-  // Creating a new data point for InfluxDB
-  const point = new Point("waste_level")
-    .tag("buoy_id", data.buoy_id)
-    .floatField("fill_level_percent", data.fill_level_percent)
-    .floatField("latitude", data.gps.latitude)
-    .floatField("longitude", data.gps.longitude)
-    .timestamp(new Date());
+  if (!Array.isArray(dataArray)) {
+    return res
+      .status(400)
+      .json({ message: "Request body must be an array of buoy data." });
+  }
 
-  // Writing the point to InfluxDB
-  writeApi.writePoint(point);
-  console.log(`Wrote point for ${data.buoy_id}`);
+  console.log(`Received a batch of ${dataArray.length} data points.`);
 
-  res.status(201).json({ message: "Data received successfully" });
+  // Creating a list of points to write to InfluxDB
+  const points = dataArray.map((data) =>
+    new Point("waste_level")
+      .tag("buoy_id", data.buoy_id)
+      .floatField("fill_level_percent", data.fill_level_percent)
+      .floatField("latitude", data.gps.latitude)
+      .floatField("longitude", data.gps.longitude)
+      .timestamp(new Date())
+  );
+
+  // Writing all the points to InfluxDB at once
+  writeApi.writePoints(points);
+  console.log(`Wrote a batch of ${points.length} points.`);
+
+  await writeApi.flush();
+  console.log("Batch flushed to InfluxDB");
+
+  res.status(201).json({ message: "Batch data received successfully" });
 });
 
 app.listen(port, () => {

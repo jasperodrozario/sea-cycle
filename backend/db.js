@@ -3,7 +3,8 @@ const { InfluxDB } = require("@influxdata/influxdb-client");
 
 // --- InfluxDB Connection ---
 const influxUrl = "http://localhost:8086";
-const influxToken = "supersecretpassword";
+const influxToken =
+  "rcSIK7zi9wBiSt6KwIlbdLIS_nnGvDcNLOWWTODiDxSfXZkCg_yEE9pJy-v2L_zYiQW0pGZbg0dRLFWB2_WPHA==";
 const influxOrg = "SeaCycleOrg";
 const influxBucket = "iot_data";
 
