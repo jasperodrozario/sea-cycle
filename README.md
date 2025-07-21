@@ -120,23 +120,23 @@ To run the full Sea-Cycle system, you will need to start its four main component
 
 This project is a monorepo containing the frontend, backend, and supporting scripts.
 
-      /sea-cycle/
-      ├── backend/                  # Express.js API
-      │   ├── src/
-      │   │   ├── db.js
-      │   │   └── server.js
-      │   └── package.json
-      ├── frontend/                 # Next.js Web Dashboard
-      │   ├── public/
-      │   ├── src/
-      │   ├── package.json
-      ├── data/                     # Docker volumes (ignored by Git)
-      │   ├── influxdb/
-      │   └── mongo/
-      ├── .gitignore                # Root Git ignore file
-      ├── docker-compose.yml        # Docker configuration for databases
-      ├── iot_data_simulator.py     # Python script to simulate IoT data
-      └── README.md                 # This file
+    /sea-cycle/
+    ├── backend/                  # Express.js API
+    │   ├── src/
+    │   │   ├── db.js
+    │   │   └── server.js
+    │   └── package.json
+    ├── frontend/                 # Next.js Web Dashboard
+    │   ├── public/
+    │   ├── src/
+    │   ├── package.json
+    ├── data/                     # Docker volumes (ignored by Git)
+    │   ├── influxdb/
+    │   └── mongo/
+    ├── .gitignore                # Root Git ignore file
+    ├── docker-compose.yml        # Docker configuration for databases
+    ├── iot_data_simulator.py     # Python script to simulate IoT data
+    └── README.md                 # This file
 
 ---
 
