@@ -45,6 +45,68 @@ app.post("/api/iot-data", async (req, res) => {
   res.status(201).json({ message: "Batch data received successfully" });
 });
 
+app.get("/api/iot-data", async (req, res) => {
+  console.log("GET /api/iot-data request received");
+  try {
+    // A Flux query to get the single most recent data point for EACH buoy
+    const fluxQuery = `
+      from(bucket: "iot_data")
+        |> range(start: -1h) 
+        |> filter(fn: (r) => r._measurement == "waste_level")
+        |> group(columns: ["buoy_id"])
+        |> last()
+        |> group()
+    `;
+
+    const results = [];
+    // Collecting the queryApi returned data in rows
+    await new Promise((resolve, reject) => {
+      queryApi.queryRows(fluxQuery, {
+        next(row, tableMeta) {
+          const o = tableMeta.toObject(row);
+          results.push(o);
+        },
+        error(error) {
+          console.error(error);
+          reject(error);
+        },
+        complete() {
+          resolve();
+        },
+      });
+    });
+
+    // Transforming the raw InfluxDB data into our desired clean format
+    const buoys = {};
+    results.forEach((r) => {
+      if (!buoys[r.buoy_id]) {
+        buoys[r.buoy_id] = { buoy_id: r.buoy_id, gps: {} };
+      }
+      buoys[r.buoy_id][r._field] = r._value;
+    });
+
+    // Convert the processed object back to an array
+    const finalData = Object.values(buoys).map((b) => {
+      // Re-nest the GPS data for consistency with our frontend
+      return {
+        buoy_id: b.buoy_id,
+        fill_level_percent: b.fill_level_percent,
+        fill_status: get_status(b.fill_level_percent),
+        gps: {
+          latitude: b.latitude,
+          longitude: b.longitude,
+        },
+      };
+    });
+
+    console.log(`Sending ${finalData.length} buoy data points to frontend.`);
+    res.json(finalData);
+  } catch (error) {
+    console.error("Error querying InfluxDB", error);
+    res.status(500).json({ message: "Failed to fetch data" });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

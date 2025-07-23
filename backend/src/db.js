@@ -9,8 +9,12 @@ const influxOrg = "SeaCycleOrg";
 const influxBucket = "iot_data";
 
 const influxDB = new InfluxDB({ url: influxUrl, token: influxToken });
+
 const writeApi = influxDB.getWriteApi(influxOrg, influxBucket);
 console.log("InfluxDB write api ready");
+
+const queryApi = influxDB.getQueryApi(influxOrg);
+console.log("InfluxDB query api read");
 
 // --- MongoDB Connection ---
 const mongoUrl = "mongodb://localhost:27017/sea-cycle";
@@ -19,4 +23,4 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
-module.exports = { writeApi }; // We only need to export the writeApi for now
+module.exports = { writeApi, queryApi }; // We only need to export the writeApi for now
