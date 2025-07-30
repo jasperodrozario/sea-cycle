@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { fetchBuoyData } from "@/services/api";
 
 export default function HomePage() {
-  cosnt[(buoyData, setBuoyData)] = useState([]);
+  const [buoyData, setBuoyData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -31,14 +31,13 @@ export default function HomePage() {
 
       <div className="p-4 border rounded-md bg-gray-50">
         <h2 className="text-xl font-semibold">Live Buoy Data</h2>
-        {isLoading ? (
-          <p>Loading data...</p>
+        {loading ? (
+          <p>Loading data....</p>
         ) : (
           <ul>
-            {buoys.map((buoy) => (
+            {buoyData.map((buoy) => (
               <li key={buoy.buoy_id}>
-                Buoy ID: {buoy.buoy_id} - Status: {buoy.fill_status} (
-                {buoy.fill_level_percent}%)
+                Buoy ID: {buoy.buoy_id}: {buoy.fill_status}
               </li>
             ))}
           </ul>
