@@ -42,19 +42,22 @@ def get_status(fill_level):
         fill_status = "Error"
     return fill_status
 
-def generate_data(buoy_data_list):
+def generate_data(buoy_data_list):    
     for buoy_data in buoy_data_list:
-        # Slowly increasing fill level, with some randomness
-        buoy_data["fill_level_percent"] += random.uniform(0.1, 0.5)
-        buoy_data["fill_status"] = get_status(buoy_data["fill_level_percent"])
+        if buoy_data["fill_level_percent"] <= 100:
+            # Slowly increasing fill level, with some randomness
+            buoy_data["fill_level_percent"] += random.uniform(0.1, 0.5)
+            buoy_data["fill_status"] = get_status(buoy_data["fill_level_percent"])
 
-        # Adding drift to simulate realism of buoy location data
-        base_location = BUOY_LOCATIONS[buoy_data["buoy_id"]]
-        drift_lat = random.uniform(-0.0005, 0.0005)
-        drift_lon = random.uniform(-0.0005, 0.0005)
-        buoy_data["gps"]["latitude"] = round(base_location["lat"] + drift_lat, 4)
-        buoy_data["gps"]["longitude"] = round(base_location["lon"] + drift_lon, 4)
-
+            # Adding drift to simulate realism of buoy location data
+            base_location = BUOY_LOCATIONS[buoy_data["buoy_id"]]
+            drift_lat = random.uniform(-0.0005, 0.0005)
+            drift_lon = random.uniform(-0.0005, 0.0005)
+            buoy_data["gps"]["latitude"] = round(base_location["lat"] + drift_lat, 4)
+            buoy_data["gps"]["longitude"] = round(base_location["lon"] + drift_lon, 4)
+        else:
+            buoy_data["fill_level_percent"] = 0
+            print("Bin emptied and waste collected.")
     return buoy_data_list
 
 def post_batch_data(payload_list):
