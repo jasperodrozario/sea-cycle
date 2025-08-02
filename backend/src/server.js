@@ -28,24 +28,26 @@ app.post("/api/iot-data", async (req, res) => {
   console.log(`Received a batch of ${dataArray.length} data points.`);
 
   // Creating a list of points to write to InfluxDB
-  const points = dataArray.map((data) => {
-    return new Point("buoy")
-      .tag("buoy_id", data.buoy_id)
-      .floatField("fill_level_percent", data.fill_level_percent)
-      .tag("fill_status", data.fill_status)
-      .floatField("latitude", data.gps.latitude)
-      .floatField("longitude", data.gps.longitude)
-      .timestamp(new Date());
-  });
-  console.log(points);
-  // Writing all the points to InfluxDB at once
-  writeApi.writePoints(points);
-  console.log(`Wrote a batch of ${points.length} points.`);
 
-  await writeApi.flush();
-  console.log("Batch flushed to InfluxDB");
+  try {
+    const points = dataArray.map((data) => {
+      return new Point("buoy")
+        .tag("buoy_id", data.buoy_id)
+        .tag("fill_status", data.fill_status)
+        .floatField("fill_level_percent", data.fill_level_percent)
+        .floatField("latitude", data.gps.latitude)
+        .floatField("longitude", data.gps.longitude)
+        .timestamp(new Date());
+    });
 
-  res.status(201).json({ message: "Batch data received successfully" });
+    writeApi.writePoints(points);
+    await writeApi.flush();
+    console.log("Batch flushed to InfluxDB");
+    res.status(201).json({ message: "Batch data received successfully" });
+  } catch (error) {
+    console.error("Error writing to InfluxDB:", error);
+    res.status(500).json({ message: "Failed to write to database." });
+  }
 });
 
 // GET iot-data: The endpoint to send IoT data
@@ -56,10 +58,16 @@ app.get("/api/iot-data", async (req, res) => {
     const fluxQuery = `
       from(bucket: "iot_data")
         |> range(start: -1d)
-        |> filter(fn: (r) => r["_measurement"] == "buoy") 
-        |> group(columns: ["buoy_id"])
+        |> filter(fn: (r) => r["_measurement"] == "buoy")
+        |> group(columns: ["buoy_id", "_field"])
         |> last()
         |> group()
+        |> pivot(
+            rowKey:["_time", "buoy_id", "fill_status"], 
+            columnKey: ["_field"], 
+            valueColumn: "_value"
+        )
+        |> keep(columns: ["buoy_id", "fill_status", "fill_level_percent", "latitude", "longitude", "_time"])
     `;
 
     const results = [];
@@ -78,10 +86,22 @@ app.get("/api/iot-data", async (req, res) => {
       });
     });
 
-    console.log("Query successful. Results:", results);
+    // console.log("Query successful. Results:", results);
+
+    //Convert query data to suitable buoy data
+    buoy_data = [];
+    results.map((result) => {
+      const buoy = {
+        buoy_id: result.buoy_id,
+        fill_level_percent: result.fill_level_percent,
+        fill_status: result.fill_status,
+        gps: { latitude: result.latitude, longitude: result.longitude },
+      };
+      buoy_data.push(buoy);
+    });
 
     // ADDED: Send the results back as a JSON response
-    res.status(200).json(results);
+    res.status(200).json(buoy_data);
   } catch (error) {
     // This will now catch errors from the promise rejection
     console.error("Error processing request:", error);
