@@ -44,9 +44,9 @@ def get_status(fill_level):
 
 def generate_data(buoy_data_list):    
     for buoy_data in buoy_data_list:
-        if buoy_data["fill_level_percent"] <= 100:
+        if buoy_data["fill_level_percent"] <= 110:
             # Slowly increasing fill level, with some randomness
-            buoy_data["fill_level_percent"] += random.uniform(0.1, 0.5)
+            buoy_data["fill_level_percent"] += random.uniform(0.01, 0.05)
             buoy_data["fill_status"] = get_status(buoy_data["fill_level_percent"])
 
             # Adding drift to simulate realism of buoy location data
