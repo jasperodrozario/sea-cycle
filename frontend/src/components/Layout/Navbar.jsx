@@ -7,7 +7,14 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 w-full bg-opacity-80 text-white p-4 z-50">
       <div className="container mx-auto flex justify-between items-center">
         <Link href={"/"}>
-          <h1 className="text-2xl font-bold text-white-400">🌊 Sea-Cycle</h1>
+          <div
+            className="text-2xl font-bold text-white-400"
+            style={{
+              backgroundImage: "url('/sea-cycle-logo.svg')",
+              backgroundSize: "logo",
+            }}
+          ></div>
+          <img src="/sea-cycle-logo2.svg" alt="SeaCycle" className="w-50" />
         </Link>
         <div className="hidden md:flex space-x-6 items-center">
           <a href="#features" className="hover:text-cyan-400 transition-colors">

@@ -3,6 +3,7 @@ const cors = require("cors");
 const app = express();
 const { writeApi, queryApi } = require("./db"); // Importing InfluxDB write API
 const { Point } = require("@influxdata/influxdb-client");
+const { analyzeImageForDebris } = require("./services/aiService");
 
 port = 3001;
 
@@ -114,4 +115,22 @@ app.get("/api/iot-data", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
+});
+
+// POST endpoint for AI image analysis
+app.post("/api/analyze-image", async (req, res) => {
+  const { imageUrl } = req.body;
+
+  if (!imageUrl) {
+    return res.status(400).json({ message: "imageUrl is required." });
+  }
+
+  console.log(`Received image for analysis: ${imageUrl}`);
+
+  try {
+    const analysisResult = await analyzeImageForDebris(imageUrl);
+    res.status(200).json(analysisResult);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
