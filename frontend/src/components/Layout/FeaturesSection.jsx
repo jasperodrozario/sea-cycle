@@ -43,7 +43,7 @@ const FeatureCard = ({ title, description, imageUrl }) => (
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="bg-gray-900 py-20 text-white">
+    <section id="features" className="bg-white py-20 text-white">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-12">
           Our Process in Action
