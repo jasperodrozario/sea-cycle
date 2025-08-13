@@ -1,9 +1,15 @@
 require("dotenv").config();
-const { GoogleGenAI } = require("@google/genai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const axios = require("axios");
 
 // Initialize the Google AI client with the API key from .env file
-const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY);
+const apiKey = process.env.GEMINI_API_KEY;
+if (!apiKey) {
+  throw new Error(
+    "Missing or invalid GEMINI_API_KEY in .env file. Please add your key to backend/.env."
+  );
+}
+const genAI = new GoogleGenerativeAI(apiKey);
 
 // Helper function to fetch an image and convert it to the format Gemini needs
 async function urlToGoogleGenerativeAIPart(url, mimeType) {
@@ -19,7 +25,7 @@ async function urlToGoogleGenerativeAIPart(url, mimeType) {
 async function analyzeImageForDebris(imageUrl) {
   try {
     // We use the gemini-pro-vision model for image analysis
-    const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `
       You are an expert in environmental science. Analyze this aerial image of a sea coastline. 

@@ -4,7 +4,8 @@ const { InfluxDB } = require("@influxdata/influxdb-client");
 // --- InfluxDB Connection ---
 const influxUrl = "http://localhost:8086";
 const influxToken =
-  "P83GZ5CSAXIftDdrjpWyRyVhuPWa5kZ6InPAm4DJUva_KAnuORjjoEsWy0U5SEba62SIhCn_6nA6WMXGgRFOgA==";
+  // "P83GZ5CSAXIftDdrjpWyRyVhuPWa5kZ6InPAm4DJUva_KAnuORjjoEsWy0U5SEba62SIhCn_6nA6WMXGgRFOgA==";
+  "Zu8-TkdR6zSqOJkyCFSGr4_SfCuRCakkEcMmSJhieVB9cYZey1S6qHhiXm2IbBd8VkhUxdgMA57rz3wqS8dQXw==";
 const influxOrg = "SeaCycleOrg";
 const influxBucket = "iot_data";
 
