@@ -35,7 +35,7 @@ async function analyzeImageForDebris(imageUrl) {
       If no debris is found, return an empty debris list.
     `;
 
-    const imagePart = await urlToGoogleGenerativeAIPart(imageUrl, "image/jpeg");
+    const imagePart = await urlToGoogleGenerativeAIPart(imageUrl, "image/webp");
 
     const result = await model.generateContent([prompt, imagePart]);
     const response = await result.response;

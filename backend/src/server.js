@@ -113,10 +113,6 @@ app.get("/api/iot-data", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
-
 // POST endpoint for AI image analysis
 app.post("/api/analyze-image", async (req, res) => {
   const { imageUrl } = req.body;
@@ -133,4 +129,8 @@ app.post("/api/analyze-image", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+});
+
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });

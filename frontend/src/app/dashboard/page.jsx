@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { fetchBuoyData } from "@/services/api";
+import ImageUploader from "@/components/ui/ImageUploader";
+import AnalysisVisualizer from "@/components/ui/AnalysisVisualizer";
 
 export default function HomePage() {
   const [buoys, setBuoys] = useState([]);
@@ -39,6 +41,7 @@ export default function HomePage() {
       <div className="h-[600px] w-full border rounded-md bg-gray-50">
         {isLoading ? <p>Loading map and data...</p> : <Map buoys={buoys} />}
       </div>
+      <ImageUploader />
     </main>
   );
 }

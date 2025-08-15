@@ -3,12 +3,14 @@ const { InfluxDB } = require("@influxdata/influxdb-client");
 
 // --- InfluxDB Connection ---
 const influxUrl = "http://localhost:8086";
+// Windows-PC influxdb api token
 const influxToken =
-  // "P83GZ5CSAXIftDdrjpWyRyVhuPWa5kZ6InPAm4DJUva_KAnuORjjoEsWy0U5SEba62SIhCn_6nA6WMXGgRFOgA==";
-  "Zu8-TkdR6zSqOJkyCFSGr4_SfCuRCakkEcMmSJhieVB9cYZey1S6qHhiXm2IbBd8VkhUxdgMA57rz3wqS8dQXw==";
+  "P83GZ5CSAXIftDdrjpWyRyVhuPWa5kZ6InPAm4DJUva_KAnuORjjoEsWy0U5SEba62SIhCn_6nA6WMXGgRFOgA==";
+// Linux-PC influxdb api token
+// const influxToken = "Zu8-TkdR6zSqOJkyCFSGr4_SfCuRCakkEcMmSJhieVB9cYZey1S6qHhiXm2IbBd8VkhUxdgMA57rz3wqS8dQXw==";
+
 const influxOrg = "SeaCycleOrg";
 const influxBucket = "iot_data";
-
 const influxDB = new InfluxDB({ url: influxUrl, token: influxToken });
 
 const writeApi = influxDB.getWriteApi(influxOrg, influxBucket);
@@ -24,4 +26,4 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
-module.exports = { writeApi, queryApi }; // We only need to export the writeApi for now
+module.exports = { writeApi, queryApi };

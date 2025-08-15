@@ -45,7 +45,7 @@ const HeroSection = () => {
           </a>
         </div>
       </section>
-      <RecylceStats></RecylceStats>
+      <RecylceStats />
     </>
   );
 };

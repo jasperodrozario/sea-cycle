@@ -13,5 +13,3 @@ export const fetchBuoyData = async () => {
     return [];
   }
 };
-
-fetchBuoyData();
