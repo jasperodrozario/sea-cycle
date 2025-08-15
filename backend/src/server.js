@@ -4,6 +4,7 @@ const app = express();
 const { writeApi, queryApi } = require("./db"); // Importing InfluxDB write API
 const { Point } = require("@influxdata/influxdb-client");
 const { analyzeImageForDebris } = require("./services/aiService");
+const Analysis = require("./models/Analysis");
 
 port = 3001;
 
@@ -115,7 +116,7 @@ app.get("/api/iot-data", async (req, res) => {
 
 // POST endpoint for AI image analysis
 app.post("/api/analyze-image", async (req, res) => {
-  const { imageUrl } = req.body;
+  const { imageUrl, gps } = req.body;
 
   if (!imageUrl) {
     return res.status(400).json({ message: "imageUrl is required." });
@@ -125,8 +126,19 @@ app.post("/api/analyze-image", async (req, res) => {
 
   try {
     const analysisResult = await analyzeImageForDebris(imageUrl);
+    const newAnalysis = new Analysis({
+      imageUrl: imageUrl,
+      imageLocation: {
+        latitude: parseFloat(gps.latitude),
+        longitude: parseFloat(gps.longitude),
+      },
+      debrisData: analysisResult.debris,
+    });
+    await newAnalysis.save();
+    console.log("Analysis result successfully saved to MongoDB");
     res.status(200).json(analysisResult);
   } catch (error) {
+    console.error("Error during image analysis or save:", error);
     res.status(500).json({ message: error.message });
   }
 });
