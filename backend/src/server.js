@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to Sea-Cycle API" });
 });
 
-// POST iot-data: The endpoint to receive IoT data
+// POST: The endpoint to receive IoT data
 app.post("/api/iot-data", async (req, res) => {
   const dataArray = req.body;
 
@@ -52,7 +52,7 @@ app.post("/api/iot-data", async (req, res) => {
   }
 });
 
-// GET iot-data: The endpoint to send IoT data
+// GET: The endpoint to send IoT data
 app.get("/api/iot-data", async (req, res) => {
   console.log("GET /api/iot-data request received");
   try {
@@ -114,7 +114,7 @@ app.get("/api/iot-data", async (req, res) => {
   }
 });
 
-// POST endpoint for AI image analysis
+// POST: endpoint for AI image analysis
 app.post("/api/analyze-image", async (req, res) => {
   const { imageUrl, gps } = req.body;
 
@@ -140,6 +140,18 @@ app.post("/api/analyze-image", async (req, res) => {
   } catch (error) {
     console.error("Error during image analysis or save:", error);
     res.status(500).json({ message: error.message });
+  }
+});
+
+// GET endpoint to fetch all saved analyses
+app.get("/api/analyses", async (req, res) => {
+  try {
+    // Find all documents in the 'analyses' collection and sort by newest first
+    const allAnalyses = await Analysis.find().sort({ analysisDate: -1 });
+    res.json(allAnalyses);
+  } catch (error) {
+    console.error("Error fetching analyses:", error);
+    res.status(500).json({ message: "Failed to fetch analyses." });
   }
 });
 
