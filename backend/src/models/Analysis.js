@@ -31,6 +31,10 @@ const analysisSchema = new mongoose.Schema({
     longitude: { type: Number },
   },
   debrisData: [debrisItemSchema], // Array of debri items
+  acknowledged: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // Create and export the model, which allows us to interact with the 'analyses' collection
