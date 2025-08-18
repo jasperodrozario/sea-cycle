@@ -32,22 +32,40 @@ const features = [
 ];
 
 const FeatureCard = ({ title, description, imageUrl }) => (
-  <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition-transform hover:scale-105 border border-cyan-500/30">
-    <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
+  <div className="group bg-white rounded-2xl overflow-hidden shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl border-2 border-transparent hover:border-cyan-200">
+    <div className="relative overflow-hidden">
+      <img
+        src={imageUrl}
+        alt={title}
+        className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    </div>
     <div className="p-6">
-      <h3 className="text-xl font-bold mb-2 text-cyan-400">{title}</h3>
-      <p className="text-gray-300">{description}</p>
+      <h3 className="text-xl font-bold mb-3 text-gray-800 group-hover:text-cyan-600 transition-colors duration-300">
+        {title}
+      </h3>
+      <p className="text-gray-600 leading-relaxed">{description}</p>
+    </div>
+    <div className="px-6 pb-6">
+      <div className="w-full h-1 bg-cyan-500 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
     </div>
   </div>
 );
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="bg-white py-20 text-white">
-      <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12">
-          Our Process in Action
-        </h2>
+    <section id="features" className="bg-cyan-50 py-20">
+      <div className="container mx-auto px-12 lg:px-24 xl:px-32 2xl:px-40">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold mb-6 text-cyan-600">
+            Our Process in Action
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Discover how our cutting-edge technology creates a seamless cycle of
+            ocean cleanup and waste management.
+          </p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
             <FeatureCard key={index} {...feature} />
