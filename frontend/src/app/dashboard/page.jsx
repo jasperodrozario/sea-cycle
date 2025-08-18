@@ -6,7 +6,7 @@ import { fetchBuoyData } from "@/services/api";
 import ImageUploader from "@/components/ui/ImageUploader";
 import AnalysisVisualizer from "@/components/ui/AnalysisVisualizer";
 
-export default function HomePage() {
+export default function DashboardPage() {
   const [buoys, setBuoys] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -34,7 +34,7 @@ export default function HomePage() {
   );
 
   return (
-    <main className="p-8">
+    <main className="p-8 navbar-offset">
       <h1 className="text-3xl font-bold mb-4">Sea-Cycle Dashboard</h1>
 
       {/* We make the container for the map have a fixed height */}

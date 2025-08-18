@@ -60,15 +60,15 @@ const HeroSection = () => {
         {/* Hero Content */}
         <div className="relative z-10 p-4 px-12 lg:px-24 xl:px-32 2xl:px-40 max-w-6xl mx-auto">
           <div className="mb-8">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg">
+            <h2 className="text-3xl md:text-6xl font-bold mb-4 text-white drop-shadow-lg">
               Cleaning Our Oceans,
             </h2>
-            <h2 className="text-3xl md:text-5xl font-bold mb-8 text-white drop-shadow-lg">
+            <h2 className="text-3xl md:text-6xl font-bold mb-8 text-white drop-shadow-lg">
               One Cycle at a Time
             </h2>
           </div>
 
-          <p className="text-xl md:text-2xl max-w-4xl mx-auto mb-12 text-blue-100 leading-relaxed">
+          <p className="text-lg w-160 font-bold md:text-xl max-w-4xl mx-auto mb-12 text-blue-100 leading-relaxed">
             Harnessing the power of{" "}
             <span className="text-cyan-400 font-semibold">AI</span>,
             <span className="text-cyan-400 font-semibold"> IoT Drones</span>,

@@ -118,87 +118,99 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-source-sans), 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-source-sans), "Source Sans 3", -apple-system,
+      BlinkMacSystemFont, sans-serif;
     font-weight: 400;
     font-size: 15px;
     line-height: 1.6;
     letter-spacing: 0.005em;
   }
-  
+
   /* Global font weight adjustments */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: 500;
     letter-spacing: -0.015em;
   }
-  
+
   /* Specific heading size adjustments */
   h1 {
     font-size: 2.75rem;
     font-weight: 400;
   }
-  
+
   h2 {
     font-size: 2.25rem;
     font-weight: 400;
   }
-  
+
   h3 {
     font-size: 1.75rem;
     font-weight: 500;
   }
-  
+
   h4 {
     font-size: 1.375rem;
     font-weight: 500;
   }
-  
+
   h5 {
     font-size: 1.25rem;
     font-weight: 500;
   }
-  
+
   h6 {
     font-size: 1.125rem;
     font-weight: 500;
   }
-  
+
   /* Paragraph and text adjustments */
   p {
     font-size: 15px;
     font-weight: 400;
     line-height: 1.7;
   }
-  
+
   /* Button font adjustments */
   button {
     font-weight: 500;
     font-size: 15px;
   }
-  
+
   /* Link adjustments */
   a {
     font-weight: 500;
   }
-  
+
   /* Input and form elements */
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     font-size: 15px;
     font-weight: 400;
   }
-  
+
   /* Navigation and menu items */
   nav a {
     font-size: 15px;
     font-weight: 400;
   }
-  
+
   /* Card and component text */
   .card-title {
     font-weight: 500;
   }
-  
+
   .card-description {
     font-size: 14px;
     font-weight: 400;
   }
+}
+
+.navbar-offset {
+  padding-top: 110px;
 }
