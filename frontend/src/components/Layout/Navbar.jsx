@@ -42,8 +42,8 @@ const Navbar = () => {
   }, []);
 
   const isWhitePage =
-    pathname === "/signin" ||
-    pathname === "/signup" ||
+    // pathname === "/signin" ||
+    // pathname === "/signup" ||
     pathname === "/dashboard";
 
   return (
@@ -103,12 +103,58 @@ const Navbar = () => {
                   className={`font-semibold mr-3 transition-all duration-300 ${
                     isScrolled || isWhitePage
                       ? "bg-gray-100 text-gray-800 hover:bg-cyan-400 hover:text-white border border-gray-300"
-                      : "bg-white text-black hover:bg-cyan-400 hover:text-white border border-white"
+                      : "bg-white text-black border border-white hover:bg-cyan-400 hover:text-white hover:border-cyan-400"
                   }`}
                 >
-                  Go to Dashboard
+                  Dashboard
                 </Button>
               </Link>
+              <Link href={"/analysis"}>
+                <Button
+                  className={`font-semibold mr-3 transition-all duration-300 ${
+                    isScrolled || isWhitePage
+                      ? "bg-gray-100 text-gray-800 hover:bg-cyan-400 hover:text-white border border-gray-300"
+                      : "bg-white text-black border border-white hover:bg-cyan-400 hover:text-white hover:border-cyan-400"
+                  }`}
+                >
+                  Analysis
+                </Button>
+              </Link>
+              {["Admin", "Municipality"].includes(user.role) && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={`relative rounded-full transition-colors duration-300 ${
+                        isScrolled || isWhitePage
+                          ? "text-gray-700 hover:bg-gray-200"
+                          : "text-white hover:bg-white/20"
+                      }`}
+                    >
+                      <Bell className="h-5 w-5" />
+                      {notifications.length > 0 && (
+                        <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500" />
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-80">
+                    <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {notifications.length > 0 ? (
+                      notifications.map((n) => (
+                        <DropdownMenuItem key={n.id} className="py-2">
+                          {n.message}
+                        </DropdownMenuItem>
+                      ))
+                    ) : (
+                      <DropdownMenuItem disabled>
+                        No new notifications
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center space-x-2">
                   <Avatar>

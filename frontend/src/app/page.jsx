@@ -13,7 +13,7 @@ export default function HomePage() {
           id="stats"
           className="bg-white py-16"
           style={{
-            backgroundImage: "url('/images/ocean-waves.jpg')",
+            backgroundImage: "url('/.jpg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
