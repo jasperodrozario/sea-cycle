@@ -5,6 +5,9 @@ const { writeApi, queryApi } = require("./db"); // Importing InfluxDB write API
 const { Point } = require("@influxdata/influxdb-client");
 const { analyzeImageForDebris } = require("./services/aiService");
 const Analysis = require("./models/Analysis");
+const User = require("./models/User");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 port = 3001;
 
@@ -15,6 +18,81 @@ app.use(express.json());
 // Main welcome route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to Sea-Cycle API" });
+});
+
+// POST endpoint for new user registration
+app.post("/api/auth/signup", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Checking if user already exists
+    let user = await User.findOne({ email });
+    if (user) {
+      return res
+        .status(400)
+        .json({ message: "User with this email already exists." });
+    }
+
+    // Hashing the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Creating a new user with the hashed password
+    user = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    // Saving the user to the database
+    await user.save();
+
+    res.status(201).json({ message: "User registered successfully!" });
+  } catch (error) {
+    console.error("Registration Error:", error);
+    res.status(500).json({ message: "Server error during registration." });
+  }
+});
+
+// POST endpoint for user signin
+app.post("/api/auth/signin", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Finding the user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials." });
+    }
+
+    // Comparing the submitted password with the stored hash
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials." });
+    }
+
+    // Creating the JWT payload
+    const payload = {
+      user: {
+        id: user.id,
+        role: user.role,
+      },
+    };
+
+    // Signing the token and sending it back
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "3h" }, // Token expires in 3 hours
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
+  } catch (error) {
+    console.error("Login Error:", error);
+    res.status(500).json({ message: "Server error during login." });
+  }
 });
 
 // POST: The endpoint to receive IoT data
@@ -30,13 +108,12 @@ app.post("/api/iot-data", async (req, res) => {
   console.log(`Received a batch of ${dataArray.length} data points.`);
 
   // Creating a list of points to write to InfluxDB
-
   try {
     const points = dataArray.map((data) => {
       return new Point("buoy")
         .tag("buoy_id", data.buoy_id)
         .tag("fill_status", data.fill_status)
-        .floatField("fill_level_percent", data.fill_level_percent)
+        .floatField("fill_level_percent", data.fill_level_percent.toFixed(2))
         .floatField("latitude", data.gps.latitude)
         .floatField("longitude", data.gps.longitude)
         .timestamp(new Date());
