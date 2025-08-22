@@ -92,8 +92,8 @@ const Map = ({ buoys }) => {
   }, [buoys, searchTerm]);
 
   return (
-    <div className="relative h-full w-full">
-      <div className="absolute top-4 right-4 z-[1000] flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md">
+    <div className="relative h-full w-full z-0">
+      <div className="absolute top-4 right-4 z-10 flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md">
         <Input
           type="search"
           placeholder="Search by Buoy ID, status, or location..."

@@ -76,83 +76,85 @@ const ImageUploader = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-800 rounded-lg text-white">
-      <h2 className="text-2xl font-bold mb-4">Analyze Drone Image</h2>
+    <div className="p-8 bg-white rounded-lg shadow-lg text-gray-800 max-w-md mx-auto">
+      <h2 className="text-2xl font-bold mb-6 text-center">
+        Analyze Drone Image
+      </h2>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-300">
+          <label className="block mb-2 text-sm font-medium text-gray-600">
             Latitude
           </label>
           <input
             type="text"
             value={latitude}
             onChange={(e) => setLatitude(e.target.value)}
-            placeholder="22.12"
+            placeholder="e.g., 22.12"
             required
-            className="w-full p-2 bg-gray-700 rounded-md border border-gray-600 focus:ring-cyan-500 focus:border-cyan-500"
+            className="w-full p-2 bg-gray-50 rounded-md border border-gray-300 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow"
           />
         </div>
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-300">
+        <div className="mb-6">
+          <label className="block mb-2 text-sm font-medium text-gray-600">
             Longitude
           </label>
           <input
             type="text"
             value={longitude}
             onChange={(e) => setLongitude(e.target.value)}
-            placeholder="91.85"
+            placeholder="e.g., 91.85"
             required
-            className="w-full p-2 bg-gray-700 rounded-md border border-gray-600 focus:ring-cyan-500 focus:border-cyan-500"
+            className="w-full p-2 bg-gray-50 rounded-md border border-gray-300 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-300">
+        <div className="mb-6">
+          <label className="block mb-2 text-sm font-medium text-gray-600">
             Upload Image
           </label>
-
           <label
             htmlFor="file-upload"
-            className="cursor-pointer bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md inline-block transition-colors"
+            className="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-md border border-gray-300 inline-block transition-colors w-full text-center"
           >
             Select Drone Image...
           </label>
-
           <input
             id="file-upload"
             name="file-upload"
             type="file"
-            className="sr-only" // This Tailwind class visually hides the element
+            className="sr-only"
             accept="image/jpeg, image/png"
             onChange={(e) => setFile(e.target.files[0])}
             required
           />
-          {file && <span className="ml-4 text-gray-400">{file.name}</span>}
+          {file && (
+            <span className="mt-2 text-sm text-gray-500 block text-center">
+              {file.name}
+            </span>
+          )}
         </div>
 
         <button
           type="submit"
           disabled={isUploading || !file}
-          className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
+          className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none"
         >
           {isUploading ? "Analyzing..." : "Analyze Image"}
         </button>
       </form>
 
-      {error && <p className="text-red-500 mt-4">Error: {error}</p>}
+      {error && <p className="text-red-500 mt-4 text-center">Error: {error}</p>}
 
       {uploadedImageUrl && (
-        <p className="text-green-400 mt-4">Successfully uploaded image!</p>
+        <p className="text-green-500 mt-4 text-center">
+          Successfully uploaded image!
+        </p>
       )}
 
       {analysisResult && (
         <div className="mt-4">
-          <h3 className="text-xl font-semibold">Analysis Complete</h3>
-          <p>Found {analysisResult.debris.length} items.</p>
-          <pre className="bg-gray-900 p-2 rounded-md mt-2 text-sm">
-            {JSON.stringify(analysisResult, null, 2)}
-          </pre>
+          <p className="text-green-500 text-center">Analysis Complete</p>
         </div>
       )}
     </div>

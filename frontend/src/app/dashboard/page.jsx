@@ -7,6 +7,14 @@ import MaintenanceAlerts from "@/components/ui/MaintenanceAlerts";
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function DashboardPage() {
   const [buoys, setBuoys] = useState([]);
@@ -41,28 +49,52 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <main className="flex-1 p-4 md:p-6 lg:p-8 navbar-offset">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold">Buoy Monitoring Dashboard</h1>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="lg:col-span-1 h-[600px] w-full border rounded-lg bg-card shadow-sm">
-          <Map buoys={buoys} />
-        </div>
-        <div className="lg:col-span-1 flex flex-col gap-6">
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Detailed Buoy Status</h2>
-            {isLoading ? (
-              <div className="flex items-center justify-center h-full border rounded-lg bg-card shadow-sm">
-                <p className="text-muted-foreground">Loading buoy data...</p>
-              </div>
-            ) : (
-              <BuoyTable buoys={buoys} />
-            )}
+    <main className="flex-1 bg-[#e8f8fa] navbar-offset">
+      <div className="container-main">
+        <header className="mb-10 mt-5">
+          <h1 className="text-2xl font-extrabold text-cyan-600">
+            Buoy Monitoring Dashboard
+          </h1>
+          <p className="text-lg text-gray-600 mb-3">
+            View and monitor real-time buoy data with automatically generated
+            statistical data
+          </p>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/" className="hover:text-cyan-400">
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  href="/dashboard"
+                  className="text-cyan-500 hover:text-cyan-400"
+                >
+                  Dashboard
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </header>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="lg:col-span-1 h-[600px] w-full border rounded-lg bg-card shadow-sm">
+            <Map buoys={buoys} />
           </div>
-          <div>
-            <MaintenanceAlerts />
+          <div className="lg:col-span-1 flex flex-col gap-6">
+            <div>
+              {isLoading ? (
+                <div className="flex items-center justify-center h-full border rounded-lg bg-card shadow-sm">
+                  <p className="text-muted-foreground">Loading buoy data...</p>
+                </div>
+              ) : (
+                <BuoyTable buoys={buoys} />
+              )}
+            </div>
+            <div>
+              <MaintenanceAlerts />
+            </div>
           </div>
         </div>
       </div>

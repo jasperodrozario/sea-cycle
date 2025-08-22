@@ -41,69 +41,68 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isWhitePage =
-    // pathname === "/signin" ||
-    // pathname === "/signup" ||
-    pathname === "/dashboard";
+  const isSpecialPage = pathname === "/";
+
+  const navLinks = [
+    { href: "/", text: "Home" },
+    { href: "/#features", text: "Features" },
+    { href: "/#stats", text: "Live Stats" },
+    { href: "/#about", text: "About Us" },
+  ];
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full p-4 z-50 transition-all duration-300 ${
-        isClient && (isScrolled || isWhitePage)
-          ? "bg-white shadow-lg"
-          : "bg-transparent"
+      className={`fixed top-0 left-0 w-full py-4 z-50 transition-all duration-300 ${
+        isClient && isScrolled ? "bg-white shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-12 lg:px-24 xl:px-32 2xl:px-40 flex justify-between items-center">
+      <div className="container-main flex justify-between items-center">
         <Link href={"/"}>
           <img
             src="/sea-cycle-logo2.svg"
             alt="SeaCycle"
             className={`w-36 mb-2 transition-all duration-300 ${
-              isScrolled || isWhitePage ? "filter brightness-0" : ""
+              isScrolled
+                ? "filter brightness-0"
+                : isSpecialPage
+                ? ""
+                : "filter brightness-0"
             }`}
           />
         </Link>
         <div className="hidden md:flex space-x-6 items-center">
-          <a
-            href="#features"
-            className={`transition-colors duration-300 ${
-              isScrolled || isWhitePage
-                ? "text-gray-700 hover:text-cyan-600"
-                : "text-white hover:text-cyan-400"
-            }`}
-          >
-            Features
-          </a>
-          <a
-            href="#stats"
-            className={`transition-colors duration-300 ${
-              isScrolled || isWhitePage
-                ? "text-gray-700 hover:text-cyan-600"
-                : "text-white hover:text-cyan-400"
-            }`}
-          >
-            Live Stats
-          </a>
-          <a
-            href="#"
-            className={`transition-colors duration-300 ${
-              isScrolled || isWhitePage
-                ? "text-gray-700 hover:text-cyan-600"
-                : "text-white hover:text-cyan-400"
-            }`}
-          >
-            About Us
-          </a>
-
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`relative font-semibold transition-colors duration-300
+                ${
+                  isScrolled
+                    ? "text-gray-700 hover:text-cyan-600"
+                    : isSpecialPage
+                    ? "text-white hover:text-cyan-400"
+                    : "text-gray-700 hover:text-cyan-600"
+                }
+                ${
+                  pathname === link.href
+                    ? "after:content-[''] after:absolute after:left-0 after:bottom-[-3px] after:w-full after:h-[0.2rem] after:bg-cyan-500"
+                    : ""
+                }
+              `}
+            >
+              {link.text}
+            </Link>
+          ))}
           {isAuthenticated ? (
             <>
               <Link href={"/dashboard"}>
                 <Button
-                  className={`font-semibold mr-3 transition-all duration-300 ${
-                    isScrolled || isWhitePage
+                  className={`font-semibold transition-all duration-300 ${
+                    isScrolled
                       ? "bg-gray-100 text-gray-800 hover:bg-cyan-400 hover:text-white border border-gray-300"
-                      : "bg-white text-black border border-white hover:bg-cyan-400 hover:text-white hover:border-cyan-400"
+                      : isSpecialPage
+                      ? "bg-white text-black border border-white hover:bg-cyan-400 hover:text-white hover:border-cyan-400"
+                      : "bg-gray-100 text-gray-800 hover:bg-cyan-400 hover:text-white border border-gray-300"
                   }`}
                 >
                   Dashboard
@@ -112,9 +111,11 @@ const Navbar = () => {
               <Link href={"/analysis"}>
                 <Button
                   className={`font-semibold mr-3 transition-all duration-300 ${
-                    isScrolled || isWhitePage
+                    isScrolled
                       ? "bg-gray-100 text-gray-800 hover:bg-cyan-400 hover:text-white border border-gray-300"
-                      : "bg-white text-black border border-white hover:bg-cyan-400 hover:text-white hover:border-cyan-400"
+                      : isSpecialPage
+                      ? "bg-white text-black border border-white hover:bg-cyan-400 hover:text-white hover:border-cyan-400"
+                      : "bg-gray-100 text-gray-800 hover:bg-cyan-400 hover:text-white border border-gray-300"
                   }`}
                 >
                   Analysis
@@ -127,7 +128,7 @@ const Navbar = () => {
                       variant="ghost"
                       size="icon"
                       className={`relative rounded-full transition-colors duration-300 ${
-                        isScrolled || isWhitePage
+                        isScrolled || isSpecialPage
                           ? "text-gray-700 hover:bg-gray-200"
                           : "text-white hover:bg-white/20"
                       }`}
@@ -168,7 +169,11 @@ const Navbar = () => {
                   </Avatar>
                   <span
                     className={`font-semibold ${
-                      isScrolled || isWhitePage ? "text-gray-800" : "text-white"
+                      isScrolled
+                        ? "text-gray-800"
+                        : isSpecialPage
+                        ? "text-white"
+                        : "text-gray-800"
                     }`}
                   >
                     {user.name}

@@ -45,7 +45,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.98 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -212,5 +212,11 @@
 }
 
 .navbar-offset {
-  padding-top: 110px;
+  padding-top: 90px;
+}
+
+@layer utilities {
+  .container-main {
+    @apply mx-auto px-12 lg:px-24 xl:px-32 2xl:px-40;
+  }
 }

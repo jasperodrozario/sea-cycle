@@ -64,6 +64,7 @@ export default function BuoyTable({ buoys }) {
 
   return (
     <div className="border rounded-lg w-full bg-card text-card-foreground shadow-sm">
+      <h2 className="text-xl font-semibold px-4 pt-4">Detailed Buoy Status</h2>
       <div className="p-4 flex items-center gap-4">
         <Input
           placeholder="Filter by ID or location..."
