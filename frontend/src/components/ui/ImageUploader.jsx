@@ -1,56 +1,52 @@
 "use client";
 import React, { useState } from "react";
 
-const ImageUploader = () => {
+const ImageUploader = ({ onUploadSuccess }) => {
   const [file, setFile] = useState(null);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [isUploading, setIsUploading] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState(null);
   const [error, setError] = useState("");
-  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
 
   const CLOUDINARY_CLOUD_NAME = "dpmcp02nj";
   const CLOUDINARY_UPLOAD_PRESET = "ml_default";
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent the form from refreshing the page
+    event.preventDefault();
     if (!file) {
       setError("Please select an image file first.");
       return;
     }
-
     setIsUploading(true);
     setError("");
-    setAnalysisResult(null);
-    setUploadedImageUrl("");
-
-    // UPLOAD TO CLOUDINARY
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
     try {
+      // UPLOADING TO CLOUDINARY
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+      const locationContext = `latitude=${latitude}|longitude=${longitude}`;
+      formData.append("context", locationContext);
+
       const cloudinaryResponse = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
         { method: "POST", body: formData }
       );
-
       const cloudinaryData = await cloudinaryResponse.json();
       const imageUrl = cloudinaryData.secure_url;
 
-      if (!imageUrl) {
-        throw new Error("Image URL not returned from Cloudinary.");
-      }
-      setUploadedImageUrl(imageUrl);
+      if (!imageUrl) throw new Error("Image URL not returned from Cloudinary.");
       console.log("Uploaded to Cloudinary:", imageUrl);
 
+      // SENDING PAYLOAD TO BACKEND FOR ANALYSIS
       const payload = {
         imageUrl: imageUrl,
-        gps: { latitude: latitude, longitude: longitude },
+        gps: {
+          latitude: parseFloat(latitude),
+          longitude: parseFloat(longitude),
+        },
       };
 
-      // SEND PAYLOAD TO BACKEND FOR ANALYSIS
       const analysisResponse = await fetch(
         "http://localhost:3001/api/analyze-image",
         {
@@ -59,14 +55,18 @@ const ImageUploader = () => {
           body: JSON.stringify(payload),
         }
       );
-
       const analysisData = await analysisResponse.json();
       if (!analysisResponse.ok) {
         throw new Error(analysisData.message || "Analysis failed.");
       }
-
       console.log("Analysis Result:", analysisData);
-      setAnalysisResult(analysisData);
+
+      // Calling the parent's handler with ALL the data it needs
+      onUploadSuccess({
+        imageUrl: imageUrl,
+        gps: payload.gps,
+        analysisData: analysisData,
+      });
     } catch (err) {
       console.error("Process failed:", err);
       setError(err.message);
@@ -80,8 +80,8 @@ const ImageUploader = () => {
       <h2 className="text-2xl font-bold mb-6 text-center">
         Analyze Drone Image
       </h2>
-
       <form onSubmit={handleSubmit}>
+        {/* Latitude */}
         <div className="mb-4">
           <label className="block mb-2 text-sm font-medium text-gray-600">
             Latitude
@@ -95,6 +95,7 @@ const ImageUploader = () => {
             className="w-full p-2 bg-gray-50 rounded-md border border-gray-300 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow"
           />
         </div>
+        {/* Longitude */}
         <div className="mb-6">
           <label className="block mb-2 text-sm font-medium text-gray-600">
             Longitude
@@ -108,7 +109,7 @@ const ImageUploader = () => {
             className="w-full p-2 bg-gray-50 rounded-md border border-gray-300 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow"
           />
         </div>
-
+        {/* File Input */}
         <div className="mb-6">
           <label className="block mb-2 text-sm font-medium text-gray-600">
             Upload Image
@@ -134,7 +135,7 @@ const ImageUploader = () => {
             </span>
           )}
         </div>
-
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={isUploading || !file}
@@ -143,20 +144,7 @@ const ImageUploader = () => {
           {isUploading ? "Analyzing..." : "Analyze Image"}
         </button>
       </form>
-
       {error && <p className="text-red-500 mt-4 text-center">Error: {error}</p>}
-
-      {uploadedImageUrl && (
-        <p className="text-green-500 mt-4 text-center">
-          Successfully uploaded image!
-        </p>
-      )}
-
-      {analysisResult && (
-        <div className="mt-4">
-          <p className="text-green-500 text-center">Analysis Complete</p>
-        </div>
-      )}
     </div>
   );
 };

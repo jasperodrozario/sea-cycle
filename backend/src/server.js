@@ -203,16 +203,16 @@ app.post("/api/analyze-image", async (req, res) => {
 
   try {
     const analysisResult = await analyzeImageForDebris(imageUrl);
-    const newAnalysis = new Analysis({
-      imageUrl: imageUrl,
-      imageLocation: {
-        latitude: parseFloat(gps.latitude),
-        longitude: parseFloat(gps.longitude),
-      },
-      debrisData: analysisResult.debris,
-    });
-    await newAnalysis.save();
-    console.log("Analysis result successfully saved to MongoDB");
+    // const newAnalysis = new Analysis({
+    //   imageUrl: imageUrl,
+    //   imageLocation: {
+    //     latitude: parseFloat(gps.latitude),
+    //     longitude: parseFloat(gps.longitude),
+    //   },
+    //   debrisData: analysisResult.debris,
+    // });
+    // await newAnalysis.save();
+    // console.log("Analysis result successfully saved to MongoDB");
     res.status(200).json(analysisResult);
   } catch (error) {
     console.error("Error during image analysis or save:", error);
@@ -221,16 +221,16 @@ app.post("/api/analyze-image", async (req, res) => {
 });
 
 // GET endpoint to fetch all saved analyses
-app.get("/api/analyses", async (req, res) => {
-  try {
-    // Find all documents in the 'analyses' collection and sort by newest first
-    const allAnalyses = await Analysis.find().sort({ analysisDate: -1 });
-    res.json(allAnalyses);
-  } catch (error) {
-    console.error("Error fetching analyses:", error);
-    res.status(500).json({ message: "Failed to fetch analyses." });
-  }
-});
+// app.get("/api/analyses", async (req, res) => {
+//   try {
+//     // Find all documents in the 'analyses' collection and sort by newest first
+//     const allAnalyses = await Analysis.find().sort({ analysisDate: -1 });
+//     res.json(allAnalyses);
+//   } catch (error) {
+//     console.error("Error fetching analyses:", error);
+//     res.status(500).json({ message: "Failed to fetch analyses." });
+//   }
+// });
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

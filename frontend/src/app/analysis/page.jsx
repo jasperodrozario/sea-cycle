@@ -14,9 +14,14 @@ import {
 
 export default function AnalysisPage() {
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageLocation, setImageLocation] = useState("");
 
+  // handler function for ImageUploader component
   const handleUploadSuccess = (data) => {
-    setAnalysisResult(data);
+    setImageUrl(data.imageUrl);
+    setImageLocation(data.gps);
+    setAnalysisResult(data.analysisData);
   };
 
   return (
@@ -33,7 +38,7 @@ export default function AnalysisPage() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  href="/analysis"
+                  href="/dashboard"
                   className="text-cyan-500 hover:text-cyan-400"
                 >
                   Analysis
@@ -48,7 +53,6 @@ export default function AnalysisPage() {
             Upload a drone image to analyze marine debris and view the results.
           </p>
         </header>
-
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
           <div className="lg:col-span-2">
             <ImageUploader onUploadSuccess={handleUploadSuccess} />
@@ -61,8 +65,9 @@ export default function AnalysisPage() {
               </h2>
               {analysisResult ? (
                 <AnalysisVisualizer
-                  imageSrc={analysisResult.imageUrl}
-                  debrisData={analysisResult.debrisData}
+                  imageSrc={imageUrl}
+                  debrisData={analysisResult}
+                  imageLocation={imageLocation}
                 />
               ) : (
                 <div className="h-96 w-full border-2 border-dashed rounded-lg bg-gray-50 flex flex-col items-center justify-center text-center p-4">
