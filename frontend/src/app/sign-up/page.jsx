@@ -42,38 +42,27 @@ const SignUpPage = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4 navbar-offset"
+      className="min-h-screen flex items-center justify-center navbar-offset"
       style={{
         backgroundImage: "url(images/waste-collection.webp)",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="flex flex-col">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Sign Up</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div className="relative z-10 w-full max-w-md">
+      <div className="flex flex-col pb-10">
+        <div>
           {/* Header */}
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-white mb-2">
               Join Our Mission
             </h2>
-            <p className="text-gray-200">
+            <p className="font-bold text-gray-300">
               Help us clean the oceans, one cycle at a time
             </p>
           </div>
 
           {/* Sign Up Form */}
-          <Card className="bg-white/95 backdrop-blur-sm shadow-2xl">
+          <Card className="bg-white/95 backdrop-blur-sm shadow-2xl w-100 md:w-120">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold text-gray-800">
                 Create Account
@@ -171,7 +160,7 @@ const SignUpPage = () => {
                 <p className="text-gray-600">
                   Already have an account?
                   <Link
-                    href="/signin"
+                    href="/sign-in"
                     className="ml-2 text-cyan-600 hover:text-cyan-700 font-semibold"
                   >
                     Sign In

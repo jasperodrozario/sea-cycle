@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { Input } from "@/components/ui/input";
@@ -37,9 +37,13 @@ const getBuoyIcon = (status) => {
 
 const BuoyMarker = ({ buoy }) => {
   const markerRef = useRef(null);
+  const map = useMap();
 
   const eventHandlers = useMemo(
     () => ({
+      click: () => {
+        map.flyTo([buoy.gps.latitude, buoy.gps.longitude], 14);
+      },
       mouseover() {
         if (markerRef.current) {
           markerRef.current.openPopup();
@@ -51,13 +55,12 @@ const BuoyMarker = ({ buoy }) => {
         }
       },
     }),
-    []
+    [map, buoy.gps.latitude, buoy.gps.longitude]
   );
 
   return (
     <Marker
       ref={markerRef}
-      key={buoy.buoy_id}
       position={[buoy.gps.latitude, buoy.gps.longitude]}
       icon={getBuoyIcon(buoy.fill_status)}
       eventHandlers={eventHandlers}
@@ -93,7 +96,7 @@ const Map = ({ buoys }) => {
 
   return (
     <div className="relative h-full w-full z-0">
-      <div className="absolute top-4 right-4 z-10 flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md">
+      <div className="absolute top-4 right-4 z-[1000] flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md">
         <Input
           type="search"
           placeholder="Search by Buoy ID, status, or location..."

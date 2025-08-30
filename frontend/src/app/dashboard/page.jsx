@@ -49,16 +49,9 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <main className="flex-1 bg-[#e8f8fa] navbar-offset">
+    <main className="flex-1 bg-[#e8f8fa] py-10 navbar-offset">
       <div className="container-main">
-        <header className="mb-10 mt-5">
-          <h1 className="text-2xl font-extrabold text-cyan-600">
-            Buoy Monitoring Dashboard
-          </h1>
-          <p className="text-lg text-gray-600 mb-3">
-            View and monitor real-time buoy data with automatically generated
-            statistical data
-          </p>
+        <header className="mb-10 mt-4">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -77,9 +70,16 @@ export default function DashboardPage() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+          <h1 className="text-2xl font-extrabold text-cyan-600 mt-4">
+            Buoy Monitoring Dashboard
+          </h1>
+          <p className="text-lg text-gray-600">
+            View and monitor real-time buoy data with automatically generated
+            statistical data
+          </p>
         </header>
         <div className="grid gap-6 lg:grid-cols-2">
-          <div className="lg:col-span-1 h-[600px] w-full border rounded-lg bg-card shadow-sm">
+          <div className="lg:col-span-1 h-[600px] w-full border rounded-lg bg-card shadow-sm relative">
             <Map buoys={buoys} />
           </div>
           <div className="lg:col-span-1 flex flex-col gap-6">
@@ -92,8 +92,8 @@ export default function DashboardPage() {
                 <BuoyTable buoys={buoys} />
               )}
             </div>
-            <div>
-              <MaintenanceAlerts />
+            <div className="h-[290px]">
+              <MaintenanceAlerts className="h-full" />
             </div>
           </div>
         </div>

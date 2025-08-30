@@ -26,7 +26,7 @@ const getStatusColorCode = (status) => {
     case "Critical":
       return "bg-red-500";
     case "Overflowing":
-      return "bg-black";
+      return "bg-red-900";
     case "Elevated":
       return "bg-yellow-400";
     default:
@@ -63,9 +63,9 @@ export default function BuoyTable({ buoys }) {
   const uniqueStatuses = [...new Set(buoys.map((b) => b.fill_status))];
 
   return (
-    <div className="border rounded-lg w-full bg-card text-card-foreground shadow-sm">
-      <h2 className="text-xl font-semibold px-4 pt-4">Detailed Buoy Status</h2>
-      <div className="p-4 flex items-center gap-4">
+    <div className="border rounded-lg w-full bg-card text-card-foreground shadow-sm p-5">
+      <h2 className="text-xl font-extrabold mb-4">Detailed Buoy Status</h2>
+      <div className="flex items-center gap-4">
         <Input
           placeholder="Filter by ID or location..."
           value={filter}
@@ -94,7 +94,7 @@ export default function BuoyTable({ buoys }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="overflow-auto px-4">
+      <div className="overflow-auto mt-2">
         <Table>
           <TableHeader>
             <TableRow>

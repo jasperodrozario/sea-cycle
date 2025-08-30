@@ -8,7 +8,6 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <FeaturesSection />
-        {/* Stats Section */}
         <section
           id="stats"
           className="bg-white py-16"

@@ -76,7 +76,7 @@ const ImageUploader = () => {
   };
 
   return (
-    <div className="p-8 bg-white rounded-lg shadow-lg text-gray-800 max-w-md mx-auto">
+    <div className="p-8 bg-white rounded-lg shadow-lg text-gray-700">
       <h2 className="text-2xl font-bold mb-6 text-center">
         Analyze Drone Image
       </h2>

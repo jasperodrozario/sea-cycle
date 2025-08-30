@@ -38,32 +38,22 @@ const SignInPage = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4 navbar-offset"
-      style={{
-        backgroundImage: "url('/images/smart-buoy-collecting-waste.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <div className="relative h-screen flex items-center justify-center text-center text-white overflow-hidden pb-20 md:pt-40">
+      <div
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{
+          backgroundImage: "url('/images/smart-buoy-collecting-waste.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      ></div>
       <div className="absolute inset-0 bg-black/50" />
       <div className="flex flex-col">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Sign In</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div className="relative z-10 w-full max-w-md">
+        <div className="relative z-10 w-100">
           {/* Header */}
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-white mb-2">Welcome Back</h2>
-            <p className="text-gray-200">
+            <p className="font-extrabold text-gray-200">
               Continue your ocean conservation journey
             </p>
           </div>
@@ -123,7 +113,7 @@ const SignInPage = () => {
                 <p className="text-gray-600">
                   Don't have an account?
                   <Link
-                    href="/signup"
+                    href="/sign-up"
                     className="ml-2 text-cyan-600 hover:text-cyan-700 font-semibold"
                   >
                     Sign Up

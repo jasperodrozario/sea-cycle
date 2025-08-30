@@ -37,7 +37,7 @@ const getPriorityIcon = (priority) => {
   }
 };
 
-export default function MaintenanceAlerts({ alerts = mockAlerts }) {
+export default function MaintenanceAlerts({ alerts = mockAlerts, className }) {
   const [visibleAlerts, setVisibleAlerts] = React.useState(alerts);
 
   const dismissAlert = (id) => {
@@ -45,14 +45,14 @@ export default function MaintenanceAlerts({ alerts = mockAlerts }) {
   };
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <AlertTriangle className="h-5 w-5" />
           Maintenance Alerts
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="h-full overflow-y-auto">
         {visibleAlerts.length > 0 ? (
           <ul className="space-y-4">
             {visibleAlerts.map((alert) => (

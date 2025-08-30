@@ -96,7 +96,7 @@ const HeroSection = () => {
       </section>
 
       {/* What We Do Section */}
-      <section className="bg-blue-50 py-20">
+      <section id="about" className="bg-blue-50 py-20">
         <div className="container mx-auto px-12 lg:px-24 xl:px-32 2xl:px-40">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold mb-6 text-cyan-600">

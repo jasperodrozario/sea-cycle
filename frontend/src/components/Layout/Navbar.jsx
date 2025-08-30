@@ -41,7 +41,8 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isSpecialPage = pathname === "/";
+  const isSpecialPage =
+    pathname === "/" || pathname === "/sign-up" || pathname === "/sign-in";
 
   const navLinks = [
     { href: "/", text: "Home" },
@@ -63,36 +64,45 @@ const Navbar = () => {
             alt="SeaCycle"
             className={`w-36 mb-2 transition-all duration-300 ${
               isScrolled
-                ? "filter brightness-0"
+                ? "filter brightness-26"
                 : isSpecialPage
                 ? ""
-                : "filter brightness-0"
+                : "filter brightness-26"
             }`}
           />
         </Link>
         <div className="hidden md:flex space-x-6 items-center">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
+          <DropdownMenu>
+            <DropdownMenuTrigger
               className={`relative font-semibold transition-colors duration-300
-                ${
-                  isScrolled
-                    ? "text-gray-700 hover:text-cyan-600"
-                    : isSpecialPage
-                    ? "text-white hover:text-cyan-400"
-                    : "text-gray-700 hover:text-cyan-600"
-                }
-                ${
-                  pathname === link.href
-                    ? "after:content-[''] after:absolute after:left-0 after:bottom-[-3px] after:w-full after:h-[0.2rem] after:bg-cyan-500"
-                    : ""
-                }
-              `}
+              ${
+                isScrolled
+                  ? "text-gray-700 hover:text-cyan-600"
+                  : isSpecialPage
+                  ? "text-white hover:text-cyan-400"
+                  : "text-gray-700 hover:text-cyan-600"
+              }
+              ${
+                pathname === "/"
+                  ? "after:content-[''] after:absolute after:left-0 after:bottom-[-3px] after:w-full after:h-[0.2rem] after:bg-cyan-500"
+                  : ""
+              }
+            `}
             >
-              {link.text}
-            </Link>
-          ))}
+              Home
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="mt-2">
+              <DropdownMenuItem>
+                <Link href="/#features">Features</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/#stats">Live Stats</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/#about">About Us</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           {isAuthenticated ? (
             <>
               <Link href={"/dashboard"}>
@@ -139,7 +149,7 @@ const Navbar = () => {
                       )}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-80">
+                  <DropdownMenuContent align="end" className="w-80 mt-2">
                     <DropdownMenuLabel>Notifications</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {notifications.length > 0 ? (
@@ -179,7 +189,7 @@ const Navbar = () => {
                     {user.name}
                   </span>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent align="start" className="mt-2">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Profile</DropdownMenuItem>
@@ -197,7 +207,7 @@ const Navbar = () => {
               </DropdownMenu>
             </>
           ) : (
-            <Link href={"/signup"}>
+            <Link href={"/sign-up"}>
               <Button className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Join Us
               </Button>

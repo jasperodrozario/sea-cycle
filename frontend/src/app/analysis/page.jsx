@@ -20,15 +20,9 @@ export default function AnalysisPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#ebf8fe] navbar-offset">
+    <div className="min-h-screen bg-[#ebf8fe] navbar-offset py-10">
       <main className="container-main">
-        <header className="mb-10 mt-5">
-          <h1 className="text-2xl font-extrabold text-cyan-600">
-            Debris Analysis Dashboard
-          </h1>
-          <p className="text-lg text-gray-600 mb-3">
-            Upload a drone image to analyze marine debris and view the results.
-          </p>
+        <header className="mb-10 mt-4">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -47,6 +41,12 @@ export default function AnalysisPage() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+          <h1 className="text-2xl font-extrabold text-cyan-600 mt-4">
+            Debris Analysis Dashboard
+          </h1>
+          <p className="text-lg text-gray-600">
+            Upload a drone image to analyze marine debris and view the results.
+          </p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
