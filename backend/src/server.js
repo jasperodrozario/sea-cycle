@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const { writeApi, queryApi } = require("./db"); // Importing InfluxDB write API
+const { writeApi, queryApi, connectDB } = require("./db"); // Importing InfluxDB write API
 const { Point } = require("@influxdata/influxdb-client");
 const { analyzeImageForDebris } = require("./services/aiService");
 const bcrypt = require("bcryptjs");
@@ -257,12 +257,25 @@ app.post("/api/analyze-image", async (req, res) => {
       debrisData: analysisResult.debris,
       debrisCount: analysisResult.debris_count,
     });
-    await newAnalysis.save();
+    
+    // Add timeout handling for the save operation
+    const savePromise = newAnalysis.save();
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Database save operation timed out')), 15000)
+    );
+    
+    await Promise.race([savePromise, timeoutPromise]);
     console.log("Analysis result successfully saved to MongoDB");
     res.status(200).json(analysisResult);
   } catch (error) {
     console.error("Error during image analysis or save:", error);
-    res.status(500).json({ message: error.message });
+    if (error.message.includes('buffering timed out')) {
+      res.status(500).json({ 
+        message: "Database connection issue. Please ensure MongoDB is running and accessible." 
+      });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
   }
 });
 
@@ -377,6 +390,9 @@ app.get("/api/users/crews", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch crews" });
   }
 });
+
+// Connect to MongoDB
+connectDB();
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

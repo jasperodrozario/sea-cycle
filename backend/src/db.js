@@ -21,9 +21,20 @@ console.log("InfluxDB query api ready");
 
 // --- MongoDB Connection ---
 const mongoUrl = "mongodb://localhost:27017/sea-cycle";
-mongoose
-  .connect(mongoUrl)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error("MongoDB Connection Error:", err));
+const connectDB = async () => {
+  try {
+    await mongoose.connect(mongoUrl, {
+      serverSelectionTimeoutMS: 30000, // 30 seconds
+      socketTimeoutMS: 45000, // 45 seconds
+      bufferCommands: false, // Disable mongoose buffering
+      maxPoolSize: 10, // Maintain up to 10 socket connections
+      minPoolSize: 5, // Maintain a minimum of 5 socket connections
+    });
+    console.log("MongoDB Connected");
+  } catch (err) {
+    console.error("MongoDB Connection Error:", err);
+    process.exit(1);
+  }
+};
 
-module.exports = { writeApi, queryApi };
+module.exports = { writeApi, queryApi, connectDB };

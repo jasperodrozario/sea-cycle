@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { fetchBuoyData } from "@/services/api";
 import BuoyTable from "@/components/ui/BuoyTable";
 import MaintenanceAlerts from "@/components/ui/MaintenanceAlerts";
-import { useMemo } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -19,6 +19,17 @@ import {
 export default function DashboardPage() {
   const [buoys, setBuoys] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/sign-in"); // Redirect to login if no token is found
+    } else {
+      setIsAuthenticated(true); // If a token exists, allow the page to render
+    }
+  }, [router]);
 
   const Map = useMemo(
     () =>
@@ -30,10 +41,12 @@ export default function DashboardPage() {
   );
 
   useEffect(() => {
+    // Only start fetching data if the user is authenticated
+    if (!isAuthenticated) return;
+
     const getData = async () => {
       try {
         const data = await fetchBuoyData();
-        console.log("Fetched data:", data);
         setBuoys(data);
       } catch (error) {
         console.error("Failed to fetch buoy data:", error);
@@ -46,7 +59,16 @@ export default function DashboardPage() {
     const interval = setInterval(getData, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isAuthenticated]); // This effect depends on the authentication status
+
+  // This prevents the dashboard from flashing before the redirect happens
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Verifying authentication...</p>
+      </div>
+    );
+  }
 
   return (
     <main className="flex-1 bg-[#e8f8fa] py-10 navbar-offset">
