@@ -61,12 +61,9 @@ export default function DashboardPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink
-                  href="/dashboard"
-                  className="text-cyan-500 hover:text-cyan-400"
-                >
+                <BreadcrumbPage className="text-cyan-500 hover:text-cyan-400">
                   Dashboard
-                </BreadcrumbLink>
+                </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

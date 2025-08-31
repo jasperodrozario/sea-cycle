@@ -4,11 +4,17 @@ const app = express();
 const { writeApi, queryApi } = require("./db"); // Importing InfluxDB write API
 const { Point } = require("@influxdata/influxdb-client");
 const { analyzeImageForDebris } = require("./services/aiService");
-const Analysis = require("./models/Analysis");
-const User = require("./models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { categorizeDebris } = require("./utils/debrisUtils");
+// const { categorizeDebris } = require("./utils/debrisUtils");
+
+// Model Imports
+const Analysis = require("./models/Analysis");
+const User = require("./models/User");
+const Mission = require("./models/Mission");
+
+// Middleware
+const { auth, admin } = require("./middleware/authMiddleware");
 
 port = 3001;
 
@@ -93,6 +99,43 @@ app.post("/api/auth/signin", async (req, res) => {
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ message: "Server error during login." });
+  }
+});
+
+// POST endpoint for an Admin to create any type of user
+app.post("/api/users/create-by-admin", [auth, admin], async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    // Role Validation
+    if (!["Authority", "CollectionCrew", "Citizen"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role specified." });
+    }
+
+    let user = await User.findOne({ email });
+    if (user) {
+      return res
+        .status(400)
+        .json({ message: "User with this email already exists." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role: role,
+    });
+
+    await user.save();
+    res.status(201).json({
+      message: `User '${name}' created successfully with role '${role}'.`,
+    });
+  } catch (error) {
+    console.error("Admin User Creation Error:", error);
+    res.status(500).json({ message: "Server error during user creation." });
   }
 });
 
@@ -270,6 +313,70 @@ app.get("/api/analyses", async (req, res) => {
 //     res.status(500).json({ message: "Failed to fetch analysis summary." });
 //   }
 // });
+
+// GET endpoint to fetch all missions
+app.get("/api/missions", async (req, res) => {
+  try {
+    // Populate 'assignedCrew' to get the crew member's name instead of just their ID
+    const missions = await Mission.find()
+      .populate("assignedCrew", "name")
+      .sort({ creationDate: -1 });
+    res.json(missions);
+  } catch (error) {
+    console.error("Error fetching missions:", error);
+    res.status(500).json({ message: "Failed to fetch missions" });
+  }
+});
+
+// POST endpoint to create a new mission
+app.post("/api/missions", async (req, res) => {
+  const { assignedCrew, analysisHotspots, notes } = req.body;
+
+  try {
+    const newMission = new Mission({
+      assignedCrew,
+      analysisHotspots,
+      notes,
+      status: "Dispatched",
+    });
+    await newMission.save();
+
+    if (analysisHotspots && analysisHotspots.length > 0) {
+      await Analysis.updateMany(
+        { _id: { $in: analysisHotspots } }, // Find all documents whose ID is in our list
+        { $set: { acknowledged: true } } // Set their 'acknowledged' field to true
+      );
+      console.log(`Acknowledged ${analysisHotspots.length} hotspots.`);
+    }
+    // -------------------------------------------------
+
+    res.status(201).json(newMission);
+  } catch (error) {
+    console.error("Error creating mission:", error);
+    res.status(500).json({ message: "Failed to create mission" });
+  }
+});
+
+// GET endpoint to fetch unassigned analysis hotspots
+app.get("/api/analyses/unassigned", async (req, res) => {
+  try {
+    // Find analyses that have not been acknowledged yet
+    const hotspots = await Analysis.find({ acknowledged: false });
+    res.json(hotspots);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch hotspots" });
+  }
+});
+
+// GET endpoint to fetch all users with the 'CollectionCrew' role
+app.get("/api/users/crews", async (req, res) => {
+  try {
+    const crews = await User.find({ role: "CollectionCrew" }).select("name");
+    res.json(crews);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch crews" });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import AnalysisVisualizer from "@/components/ui/AnalysisVisualizer";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -47,16 +48,16 @@ export default function AnalysisHistoryPage() {
   const [chartOptions, setChartOptions] = useState({});
 
   const DEBRIS_COLORS = {
-    Plastic: "rgba(255, 99, 132, 1)",
-    Wood: "rgba(139, 69, 19, 1)",
-    Metal: "rgba(192, 192, 192, 1)",
-    Glass: "rgba(0, 255, 255, 1)",
-    Textiles: "rgba(255, 206, 86, 1)",
-    Styrofoam: "rgba(225, 225, 225, 1)",
-    "Fishing Gear": "rgba(75, 192, 192, 1)",
-    Organic: "rgba(75, 192, 75, 1)",
-    Other: "rgba(153, 102, 255, 1)",
-    Patch: "rgba(201, 203, 207, 1)",
+    Plastic: "rgba(255, 99, 132, 0.6)",
+    Wood: "rgba(139, 69, 19, 0.6)",
+    Metal: "rgba(87, 87, 87, 0.6)",
+    Glass: "rgba(0, 255, 255, 0.6)",
+    Textiles: "rgba(255, 206, 86, 0.6)",
+    Styrofoam: "rgba(255, 94, 0, 0.6)",
+    "Fishing Gear": "rgba(75, 192, 192, 0.6)",
+    Organic: "rgba(75, 192, 75, 0.6)",
+    Other: "rgba(153, 102, 255, 0.6)",
+    Patch: "rgba(0, 0, 0, 1)",
   };
 
   useEffect(() => {
@@ -183,7 +184,7 @@ export default function AnalysisHistoryPage() {
 
         <div className="flex gap-4 mb-8">
           <Select onValueChange={handleLocationChange}>
-            <SelectTrigger className="w-[280px]">
+            <SelectTrigger className="w-[280px] border-cyan-500 text-gray-700">
               <SelectValue placeholder="Select a location" />
             </SelectTrigger>
             <SelectContent>
@@ -198,14 +199,18 @@ export default function AnalysisHistoryPage() {
           {analysesForLocation.length > 1 && (
             <Select
               onValueChange={handleAnalysisSelection}
-              value={selectedAnalysis?._id}
+              value={selectedAnalysis ? selectedAnalysis._id : ""}
             >
-              <SelectTrigger className="w-[280px]">
+              <SelectTrigger className="w-[280px] border-cyan-500 text-gray-700">
                 <SelectValue placeholder="Select an analysis time" />
               </SelectTrigger>
               <SelectContent>
                 {analysesForLocation.map((a) => (
-                  <SelectItem key={a._id} value={a._id}>
+                  <SelectItem
+                    key={a._id}
+                    value={a._id}
+                    className={"text-gray-700"}
+                  >
                     {new Date(a.analysisDate).toLocaleString()}
                   </SelectItem>
                 ))}
@@ -216,9 +221,11 @@ export default function AnalysisHistoryPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-bold mb-4">Analysis Details</h2>
+            <h2 className="text-xl font-bold mb-4 text-gray-700">
+              Analysis Details
+            </h2>
             {selectedAnalysis ? (
-              <div className="space-y-2 text-gray-700">
+              <div className="space-y-2 text-gray-500">
                 <p>
                   <span className="font-semibold">Overall Assessment:</span>{" "}
                   {selectedAnalysis.overallAssessment}
@@ -227,6 +234,16 @@ export default function AnalysisHistoryPage() {
                   <span className="font-semibold">Total Debris Count:</span>{" "}
                   {selectedAnalysis.debrisCount}
                 </p>
+
+                {selectedAnalysis.imageUrl && (
+                  <div className="mt-4">
+                    <AnalysisVisualizer
+                      imageSrc={selectedAnalysis.imageUrl}
+                      debrisData={selectedAnalysis.debrisData}
+                      imageLocation={selectedAnalysis.imageLocation}
+                    />
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-center text-gray-500 py-8">
@@ -234,7 +251,7 @@ export default function AnalysisHistoryPage() {
               </div>
             )}
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="bg-white p-6 rounded-lg shadow-lg  text-gray-700">
             <h2 className="text-xl font-bold mb-4">Debris Breakdown</h2>
             <div className="h-96 flex items-center justify-center">
               <Bar options={chartOptions} data={chartData} />
