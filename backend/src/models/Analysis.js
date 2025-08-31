@@ -8,7 +8,7 @@ const debrisItemSchema = new mongoose.Schema(
       required: true,
     },
     box: {
-      type: [Number], // An array of numbers [x_min, y_min, x_max, y_max]
+      type: [Number],
       required: true,
     },
   },
@@ -30,7 +30,9 @@ const analysisSchema = new mongoose.Schema({
     latitude: { type: Number },
     longitude: { type: Number },
   },
+  overallAssessment: { type: String, default: "" },
   debrisData: [debrisItemSchema], // Array of debri items
+  debrisCount: { type: Number, default: 0 },
   acknowledged: {
     type: Boolean,
     default: false,

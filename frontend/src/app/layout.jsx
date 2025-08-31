@@ -11,7 +11,7 @@ const sourceSans = Source_Sans_3({
 });
 
 export const metadata = {
-  title: "SeaCycle - Cleaning Our Oceans",
+  title: "SeaCycle - Cleaning Our Oceans One Cycle at a Time",
   description:
     "SeaCycle uses AI, IoT Drones, and Blockchain to create a transparent and efficient ecosystem for marine waste management.",
 };

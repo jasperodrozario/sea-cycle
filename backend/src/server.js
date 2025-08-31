@@ -8,6 +8,7 @@ const Analysis = require("./models/Analysis");
 const User = require("./models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { categorizeDebris } = require("./utils/debrisUtils");
 
 port = 3001;
 
@@ -203,16 +204,18 @@ app.post("/api/analyze-image", async (req, res) => {
 
   try {
     const analysisResult = await analyzeImageForDebris(imageUrl);
-    // const newAnalysis = new Analysis({
-    //   imageUrl: imageUrl,
-    //   imageLocation: {
-    //     latitude: parseFloat(gps.latitude),
-    //     longitude: parseFloat(gps.longitude),
-    //   },
-    //   debrisData: analysisResult.debris,
-    // });
-    // await newAnalysis.save();
-    // console.log("Analysis result successfully saved to MongoDB");
+    const newAnalysis = new Analysis({
+      imageUrl: imageUrl,
+      imageLocation: {
+        latitude: parseFloat(gps.latitude),
+        longitude: parseFloat(gps.longitude),
+      },
+      overallAssessment: analysisResult.overall_assessment,
+      debrisData: analysisResult.debris,
+      debrisCount: analysisResult.debris_count,
+    });
+    await newAnalysis.save();
+    console.log("Analysis result successfully saved to MongoDB");
     res.status(200).json(analysisResult);
   } catch (error) {
     console.error("Error during image analysis or save:", error);
@@ -231,6 +234,42 @@ app.post("/api/analyze-image", async (req, res) => {
 //     res.status(500).json({ message: "Failed to fetch analyses." });
 //   }
 // });
+
+// GET endpoint to fetch a categorized summary of all analyses
+app.get("/api/analyses/summary", async (req, res) => {
+  try {
+    // 1. Fetching all documents from the database
+    const allAnalyses = await Analysis.find({})
+      .select("analysisDate imageUrl imageLocation debrisData") // Selecting required fields
+      .sort({ analysisDate: -1 }); // Sorting by newest first
+
+    // 2. Processing the raw data into the desired summary format
+    const summarizedData = allAnalyses.map((analysis) => {
+      const summary = {}; // Category count object
+
+      // Looping through each piece of debris in the analysis
+      analysis.debrisData.forEach((debrisItem) => {
+        const category = categorizeDebris(debrisItem.item);
+        // If the category already exists in the summary, increment its count. Otherwise, set it to 1.
+        summary[category] = (summary[category] || 0) + 1;
+      });
+
+      // 3. Returning a clean object with just the data we need for the chart
+      return {
+        _id: analysis._id,
+        analysisDate: analysis.analysisDate,
+        imageUrl: analysis.imageUrl,
+        imageLocation: analysis.imageLocation,
+        summary: summary, // The final categorized counts
+      };
+    });
+
+    res.json(summarizedData);
+  } catch (error) {
+    console.error("Error fetching analysis summary:", error);
+    res.status(500).json({ message: "Failed to fetch analysis summary." });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

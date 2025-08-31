@@ -66,7 +66,7 @@ export default function AnalysisPage() {
               {analysisResult ? (
                 <AnalysisVisualizer
                   imageSrc={imageUrl}
-                  debrisData={analysisResult}
+                  debrisData={analysisResult.debris}
                   imageLocation={imageLocation}
                 />
               ) : (
