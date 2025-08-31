@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ImageUploader from "@/components/ui/ImageUploader";
 import AnalysisVisualizer from "@/components/ui/AnalysisVisualizer";
+import Link from "next/link";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -52,6 +53,13 @@ export default function AnalysisPage() {
           <p className="text-lg text-gray-600">
             Upload a drone image to analyze marine debris and view the results.
           </p>
+          <div className="mt-6">
+            <Link href="/analysis/history" passHref>
+              <button className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-all transform hover:scale-105">
+                View Analysis History
+              </button>
+            </Link>
+          </div>
         </header>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
           <div className="lg:col-span-2">
