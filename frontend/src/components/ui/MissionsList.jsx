@@ -6,11 +6,38 @@ const MissionsList = () => {
   const [missions, setMissions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const mockMissions = [
+    {
+      _id: "65a4a5e1e6f2c7a8b9c0d1e2",
+      missionName: "Pacific Gyre Cleanup",
+      status: "Completed",
+      assignedCrew: { name: "Crew Alpha" },
+      creationDate: "2023-01-15T10:00:00Z",
+    },
+    {
+      _id: "65a4a5e1e6f2c7a8b9c0d1e3",
+      missionName: "Atlantic Coast Patrol",
+      status: "In Progress",
+      assignedCrew: { name: "Crew Bravo" },
+      creationDate: "2023-03-20T14:30:00Z",
+    },
+    {
+      _id: "65a4a5e1e6f2c7a8b9c0d1e4",
+      missionName: "Mediterranean Survey",
+      status: "Planned",
+      assignedCrew: { name: "Crew Charlie" },
+      creationDate: "2023-05-10T09:00:00Z",
+    },
+  ];
+
   useEffect(() => {
     const loadMissions = async () => {
       setIsLoading(true);
-      const data = await fetchMissions();
-      setMissions(data);
+      // Use mock data for now, or fetch from API if needed.
+      // For this request, we'll prioritize showing dummy data.
+      setMissions(mockMissions);
+      // const data = await fetchMissions();
+      // setMissions(data);
       setIsLoading(false);
     };
     loadMissions();

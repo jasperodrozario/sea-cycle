@@ -235,6 +235,78 @@ app.get("/api/iot-data", async (req, res) => {
   }
 });
 
+// GET: Endpoint to fetch historical IoT data for a specific buoy over a time range
+app.get("/api/iot-data/history", async (req, res) => {
+  console.log("GET /api/iot-data/history request received");
+  const { buoyId, timeRange } = req.query;
+
+  if (!buoyId || !timeRange) {
+    return res
+      .status(400)
+      .json({ message: "Buoy ID and time range are required." });
+  }
+
+  let range;
+  switch (timeRange) {
+    case "1h":
+      range = "-1h";
+      break;
+    case "6h":
+      range = "-6h";
+      break;
+    case "24h":
+      range = "-24h";
+      break;
+    case "7d":
+      range = "-7d";
+      break;
+    case "30d":
+      range = "-30d";
+      break;
+    default:
+      range = "-24h"; // Default to 24 hours if invalid range
+  }
+
+  try {
+    const fluxQuery = `
+      from(bucket: "iot_data")
+        |> range(start: ${range})
+        |> filter(fn: (r) => r["_measurement"] == "buoy" and r["buoy_id"] == "${buoyId}" and r["_field"] == "fill_level_percent")
+        |> aggregateWindow(every: 30m, fn: mean, createEmpty: false)
+        |> keep(columns: ["_time", "_value", "buoy_id"])
+        |> rename(columns: {_value: "fill_level_percent"})
+        |> sort(columns: ["_time"])
+    `;
+
+    const results = [];
+    await new Promise((resolve, reject) => {
+      queryApi.queryRows(fluxQuery, {
+        next(row, tableMeta) {
+          results.push(tableMeta.toObject(row));
+        },
+        error(error) {
+          console.error("Query Error:", error);
+          reject(error);
+        },
+        complete() {
+          resolve();
+        },
+      });
+    });
+
+    const buoy_history_data = results.map((result) => ({
+      buoy_id: result.buoy_id,
+      fill_level_percent: result.fill_level_percent,
+      timestamp: result._time, // Include timestamp for historical data
+    }));
+
+    res.status(200).json(buoy_history_data);
+  } catch (error) {
+    console.error("Error fetching historical buoy data:", error);
+    res.status(500).json({ message: "Failed to fetch historical data." });
+  }
+});
+
 // POST: endpoint for AI image analysis
 app.post("/api/analyze-image", async (req, res) => {
   const { imageUrl, gps } = req.body;
@@ -257,21 +329,25 @@ app.post("/api/analyze-image", async (req, res) => {
       debrisData: analysisResult.debris,
       debrisCount: analysisResult.debris_count,
     });
-    
+
     // Add timeout handling for the save operation
     const savePromise = newAnalysis.save();
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Database save operation timed out')), 15000)
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Database save operation timed out")),
+        15000
+      )
     );
-    
+
     await Promise.race([savePromise, timeoutPromise]);
     console.log("Analysis result successfully saved to MongoDB");
     res.status(200).json(analysisResult);
   } catch (error) {
     console.error("Error during image analysis or save:", error);
-    if (error.message.includes('buffering timed out')) {
-      res.status(500).json({ 
-        message: "Database connection issue. Please ensure MongoDB is running and accessible." 
+    if (error.message.includes("buffering timed out")) {
+      res.status(500).json({
+        message:
+          "Database connection issue. Please ensure MongoDB is running and accessible.",
       });
     } else {
       res.status(500).json({ message: error.message });

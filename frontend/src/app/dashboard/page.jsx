@@ -15,6 +15,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import BuoyHistoryChart from "@/components/ui/BuoyHistoryChart";
 
 export default function DashboardPage() {
   const [buoys, setBuoys] = useState([]);
@@ -114,6 +115,11 @@ export default function DashboardPage() {
             <div className="h-[290px]">
               <MaintenanceAlerts className="h-full" />
             </div>
+          </div>
+        </div>
+        <div className="grid gap-6 lg:grid-cols-1 mt-6">
+          <div className="lg:col-span-1 h-[500px] w-full">
+            <BuoyHistoryChart />
           </div>
         </div>
       </div>

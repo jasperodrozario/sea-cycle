@@ -1,24 +1,26 @@
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:3001", // Your backend API base URL
+});
+
 // Fetches real-time buoy data
 export const fetchBuoyData = async () => {
-  const url = "http://localhost:3001/api/iot-data";
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    const data = response.json();
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Failed to fetch buoy data: ", error);
-    return [];
-  }
+  const response = await api.get("/api/iot-data");
+  return response.data;
+};
+
+export const fetchBuoyHistoryData = async (buoyId, timeRange) => {
+  const response = await api.get(
+    `/api/iot-data/history?buoyId=${buoyId}&timeRange=${timeRange}`
+  );
+  return response.data;
 };
 
 // Fetches all the available missions
 export const fetchMissions = async () => {
   try {
-    const response = await fetch("http://localhost:3001/api/missions");
+    const response = await api.get("/api/missions");
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -32,9 +34,7 @@ export const fetchMissions = async () => {
 // Fetches analysis results that have not yet been assigned to a mission
 export const fetchUnassignedHotspots = async () => {
   try {
-    const response = await fetch(
-      "http://localhost:3001/api/analyses/unassigned"
-    );
+    const response = await api.get("/api/analyses/unassigned");
     if (!response.ok) throw new Error("Network response was not ok");
     return await response.json();
   } catch (error) {
@@ -46,7 +46,7 @@ export const fetchUnassignedHotspots = async () => {
 // Fetches all users with the 'CollectionCrew' role
 export const fetchCrews = async () => {
   try {
-    const response = await fetch("http://localhost:3001/api/users/crews");
+    const response = await api.get("/api/users/crews");
     if (!response.ok) throw new Error("Network response was not ok");
     return await response.json();
   } catch (error) {
@@ -58,11 +58,7 @@ export const fetchCrews = async () => {
 // Posts the data to create a new mission
 export const createMission = async (missionData) => {
   try {
-    const response = await fetch("http://localhost:3001/api/missions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(missionData),
-    });
+    const response = await api.post("/api/missions", missionData);
     if (!response.ok) throw new Error("Failed to create mission");
     return await response.json();
   } catch (error) {
