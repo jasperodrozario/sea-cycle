@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3001", // Your backend API base URL
+  baseURL: "http://localhost:3001",
 });
 
 // Fetches real-time buoy data
@@ -21,10 +21,7 @@ export const fetchBuoyHistoryData = async (buoyId, timeRange) => {
 export const fetchMissions = async () => {
   try {
     const response = await api.get("/api/missions");
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error("Failed to fetch missions:", error);
     return [];
@@ -35,8 +32,7 @@ export const fetchMissions = async () => {
 export const fetchUnassignedHotspots = async () => {
   try {
     const response = await api.get("/api/analyses/unassigned");
-    if (!response.ok) throw new Error("Network response was not ok");
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error("Failed to fetch hotspots:", error);
     return [];
@@ -47,8 +43,7 @@ export const fetchUnassignedHotspots = async () => {
 export const fetchCrews = async () => {
   try {
     const response = await api.get("/api/users/crews");
-    if (!response.ok) throw new Error("Network response was not ok");
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error("Failed to fetch crews:", error);
     return [];
@@ -59,8 +54,7 @@ export const fetchCrews = async () => {
 export const createMission = async (missionData) => {
   try {
     const response = await api.post("/api/missions", missionData);
-    if (!response.ok) throw new Error("Failed to create mission");
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error("Failed to create mission:", error);
     throw error;

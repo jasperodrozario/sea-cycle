@@ -11,6 +11,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas-pro";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -146,6 +148,20 @@ export default function AnalysisHistoryPage() {
     }
   };
 
+  const handleGenerateReport = async () => {
+    if (!selectedAnalysis) return;
+
+    const content = document.getElementById("analysis-report-content");
+    if (!content) return;
+
+    const canvas = await html2canvas(content, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF();
+    pdf.addImage(imgData, "PNG", 10, 10);
+    pdf.save(`analysis_report_${selectedAnalysis._id}.pdf`);
+  };
+
   return (
     <div className="min-h-screen bg-[#ebf8fe] navbar-offset py-10">
       <main className="container-main">
@@ -225,7 +241,10 @@ export default function AnalysisHistoryPage() {
               Analysis Details
             </h2>
             {selectedAnalysis ? (
-              <div className="space-y-2 text-gray-500">
+              <div
+                id="analysis-report-content"
+                className="space-y-2 text-gray-500"
+              >
                 <p>
                   <span className="font-semibold">Overall Assessment:</span>{" "}
                   {selectedAnalysis.overallAssessment}
@@ -249,6 +268,14 @@ export default function AnalysisHistoryPage() {
               <div className="text-center text-gray-500 py-8">
                 <p>Select a location to view analysis details.</p>
               </div>
+            )}
+            {selectedAnalysis && (
+              <button
+                onClick={handleGenerateReport}
+                className="mt-6 w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+              >
+                Generate Analysis Report (PDF)
+              </button>
             )}
           </div>
           <div className="bg-white p-6 rounded-lg shadow-lg  text-gray-700">

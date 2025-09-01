@@ -15,13 +15,21 @@ const CreateMissionForm = ({ onMissionCreated }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  const mockCrews = [
+    { _id: "crew1", name: "Ocean Savers" },
+    { _id: "crew2", name: "Marine Defenders" },
+    { _id: "crew3", name: "Aqua Cleaners" },
+  ];
+
   // Fetch initial data for the form
   useEffect(() => {
     const loadFormData = async () => {
       const hotspotsData = await fetchUnassignedHotspots();
-      const crewsData = await fetchCrews();
       setHotspots(hotspotsData);
-      setCrews(crewsData);
+      // Use mock data for crews for now
+      setCrews(mockCrews);
+      // const crewsData = await fetchCrews();
+      // setCrews(crewsData);
     };
     loadFormData();
   }, []);
